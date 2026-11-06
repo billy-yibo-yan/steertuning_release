@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+.ruff_cache/
+
+# Data, weights and run outputs
+/data/
+/third_party/
+*.pt
+*.ckpt
+*.safetensors
+*.npz
+wandb/
+outputs/
+multirun/
+logs/
+
+# Editors and systems
+.vscode/
+.idea/
+.DS_Store

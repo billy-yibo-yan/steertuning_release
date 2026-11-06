@@ -1,0 +1,39 @@
+# Pretraining on D_wild.
+defaults:
+  - policy: steertuning
+  - _self_
+  - override hydra/hydra_logging: none
+  - override hydra/job_logging: none
+
+root: ${oc.env:STEERTUNING_HOME,./data}
+dataset_root: ${root}/d_wild
+output_dir: ${root}/pretraining   # checkpoints, and the final export in <output_dir>/pretrained; a run resumes from its checkpoints
+normalizer: null                  # stats JSON; null fits on the training split once
+
+steps: 1000000
+batch_size: 100                   # per GPU; a global batch of 200 on 2 GPUs
+num_workers: 6                    # per GPU
+seed: 42
+
+learning_rate: 1.5e-4
+weight_decay: 0.01
+adam_betas: [0.9, 0.99]
+adam_eps: 1.0e-7
+warmup_steps: 1000                # then cosine down to 0 at the last step
+grad_clip: 1.0
+bf16_autocast: true
+
+log_every: 10                     # to wandb; with wandb off, the progress bar shows the loss
+save_every: 10000
+
+wandb:
+  enabled: false
+  project: steertuning
+  run_name: null                  # also the run id; null uses the name of output_dir
+
+hydra:
+  output_subdir: null
+  job:
+    chdir: false
+  run:
+    dir: .

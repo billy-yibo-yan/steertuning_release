@@ -1,0 +1,10 @@
+# Decoder ablation: temporal UNet in place of the diffusion transformer.
+defaults:
+  - steertuning
+  - _self_
+
+decoder: unet
+decoder_args:
+  channels: [256, 512, 1024]
+  kernel_size: 3
+  groups: 8

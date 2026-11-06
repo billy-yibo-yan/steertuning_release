@@ -1,0 +1,84 @@
+# Robot deployment.
+defaults:
+  - _self_
+  - override hydra/hydra_logging: none
+  - override hydra/job_logging: none
+
+root: ${oc.env:STEERTUNING_HOME,./data}
+task: ???                         # task folder under root
+task_dir: ${root}/${task}
+pretrained: ${root}/pretrained
+adapter: ${task_dir}/lora/adapter.safetensors   # null runs the pretrained policy
+selection: layout                 # layout, wrist or vinn
+instruction: ???                  # the language instruction: the task description typed when recording
+object_prompt: ???                # the manipulated object for SAM3, e.g. "bread"; null keeps the mask empty
+object_min_score: 0.7             # SAM3 query score needed to keep the mask
+sam3_checkpoint: null             # null loads it from the upstream repository
+time_limit: 60.0                  # seconds per rollout, counted from the first row
+device: cuda:0
+
+calibration: ${root}/calibration/camera_from_base.npz
+
+robot:
+  host: ???                       # robot computer
+  port: 5557
+  hand_host: null                 # defaults to robot.host
+  left_hand_port: 8008
+  right_hand_port: 8007
+
+camera:
+  host: ???                       # computer that runs the Aria stream
+  port: 5555
+  depth_model: M                  # S2M2 size
+  depth_refine: 3
+  depth_weights: null             # null uses aria2mano's folder
+
+control:
+  steering_weight: 0.3            # w, uniform over points and rows; 0 runs the policy alone
+  num_steps: 8                    # DDIM steps
+  row_period: 0.3                 # seconds: 15 steps at stride 3 at 10 Hz
+  control_period: 0.02
+  interpolation_points: 12
+  max_joint_speed: 1.0            # rad/s
+  max_row_move: 1.5               # radians: a row asking for more is held and logged
+  seed: 0
+  chunking_blend: 8               # rows of the hand-over to a new chunk
+
+# Wuji's adaptive retargeter, with the values of wuji-retargeting's example adaptive_analytical_avp.yaml
+# at v2026.8.3: wrist-relative tip vectors when pinching, the full hand otherwise.
+retargeting:
+  optimizer:
+    type: AdaptiveOptimizerAnalytical
+  retarget:
+    lp_alpha: 0.5                 # ours, raised because the filter runs once per 0.3 s row
+    huber_delta: 2.0
+    huber_delta_dir: 0.5
+    norm_delta: 0.04
+    w_pos: 1.0
+    w_dir: 10.0
+    scaling: 1.0
+    project_tip_dir: false
+    w_full_hand: 1.0
+    segment_scaling:
+      thumb: [1.0, 1.0, 1.0]
+      index: [1.0, 1.03, 1.05]
+      middle: [1.0, 1.0, 1.0]
+      ring: [1.0, 1.0, 1.0]
+      pinky: [1.05, 1.15, 1.15]
+    pinch_thresholds:             # centimeters: tip vectors below d1, full hand above d2
+      index: {d1: 2.0, d2: 4.0}
+      middle: {d1: 2.0, d2: 4.0}
+      ring: {d1: 2.0, d2: 4.0}
+      pinky: {d1: 2.0, d2: 4.0}
+    mediapipe_rotation: {x: 0.0, y: 0.0, z: 0.0}
+
+replay:
+  # A recorded demo's preprocessed session directory: run without hardware. Other sessions need object_prompt=null.
+  session: null
+
+hydra:
+  output_subdir: null
+  job:
+    chdir: false
+  run:
+    dir: .

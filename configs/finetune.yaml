@@ -1,0 +1,31 @@
+# Fine-tuning on a task's demonstrations.
+defaults:
+  - _self_
+  - override hydra/hydra_logging: none
+  - override hydra/job_logging: none
+
+root: ${oc.env:STEERTUNING_HOME,./data}
+task: ???                         # task folder under root
+task_dir: ${root}/${task}
+pretrained: ${root}/pretrained    # released weights, or the export of pretraining
+adapter: ${task_dir}/lora/adapter.safetensors
+device: cuda
+
+finetune:
+  rank: 8
+  alpha: 16.0                     # an adapter's output is multiplied by alpha / rank = 2
+  steps: 2000
+  batch_size: 16
+  learning_rate: 5.0e-4
+  weight_decay: 0.01
+  grad_clip: 1.0
+  pool_size: 720                  # stored samples, at least one per window; long runs use null, a fresh batch per step
+  num_workers: 8
+  seed: 0
+
+hydra:
+  output_subdir: null
+  job:
+    chdir: false
+  run:
+    dir: .

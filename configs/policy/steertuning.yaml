@@ -1,0 +1,24 @@
+# Policy architecture.
+point_encoder: utonia
+decoder: dit
+action_dim: 156             # fixed by the representation: 52 points x 3
+chunk_steps: 15             # fixed by the representation
+width: 1024
+num_heads: 8
+observation_blocks: 3
+denoiser_blocks: 6
+ffn_dim: 2048
+dropout: 0.1
+token_dropout: 0.1
+time_dim: 256
+num_point_tokens: 512
+point_feature_dim: 1227     # Utonia levels 1224 + xyz 3
+mask_feature_dim: 512
+text_feature_dim: 768
+proprio_hidden_dim: 512
+proprio_noise_std: 0.04     # normalized units
+train_timesteps: 100
+utonia_repo: Pointcept/Utonia
+utonia_revision: 9457f025e36c7001ee962a542f0d27a5b600e1e7
+text_model: google/siglip-base-patch16-224
+text_revision: 7fd15f0689c79d79e38b1c2e2e2370a7bf2761ed

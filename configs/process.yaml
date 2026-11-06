@@ -1,0 +1,38 @@
+# Processing recordings into training data, and recording demonstrations.
+defaults:
+  - _self_
+  - override hydra/hydra_logging: none
+  - override hydra/job_logging: none
+
+root: ${oc.env:STEERTUNING_HOME,./data}
+task: ???                         # task folder under root
+path: ${root}/${task}             # or any directory of recordings, or one recording
+description: null                 # typed task description; asked for when recording, if missing
+
+stream:
+  host: ???                       # machine running the Aria stream publisher
+  port: 5555
+
+process:
+  sam3_device: cuda:0
+  depth_device: cuda:0
+  language_device: cuda:0
+  depth_model: M                  # S2M2 size: S, M, L or XL
+  depth_refine: 3
+  qwen_model: Qwen/Qwen3-VL-8B-Instruct
+  gemini_model: gemini-2.5-flash  # needs the GEMINI_API_KEY environment variable
+  contact_threshold_m: 0.05
+  contact_stride: 3               # frames between contact readings
+  language_frames: 10
+  depth_mask_padding_px: 4        # dilation of the arm and hand mask on depth
+  sam3_window_frames: 128         # a new SAM3 session every so many frames bounds memory
+  cloud_points: 40000             # stored per frame, enough for the read-time crop and resampling
+  num_paraphrases: 8
+  seed: 0
+
+hydra:
+  output_subdir: null
+  job:
+    chdir: false
+  run:
+    dir: .

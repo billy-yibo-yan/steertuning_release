@@ -1,0 +1,20 @@
+# The full environment for a GPU workstation. The steps after `conda env create` are in README.md.
+name: steertuning
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  - setuptools=80
+  - pip:
+      - --extra-index-url https://download.pytorch.org/whl/cu128
+      - --find-links https://data.pyg.org/whl/torch-2.8.0+cu128.html
+      - torch==2.8.0+cu128
+      - torchvision==0.23.0+cu128
+      - torch_scatter==2.1.2+pt28cu128
+      - spconv-cu126==2.3.8
+      - ftfy==6.1.1
+      - iopath==0.1.10
+      - regex==2026.1.15
+      - wuji-retargeting @ git+https://github.com/wuji-technology/wuji-retargeting@v2026.8.3
+      - -e .[training,processing,robot,navigation,dev]

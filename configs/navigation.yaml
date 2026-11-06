@@ -1,0 +1,43 @@
+# Object navigation with SAM3 latents.
+defaults:
+  - _self_
+  - override hydra/hydra_logging: none
+  - override hydra/job_logging: none
+
+target: null                  # object name; null only builds the map
+map_path: ${oc.env:STEERTUNING_HOME,./data}/navigation_map.npz
+map_duration_s: 120           # mapping time when map_path does not exist yet
+device: cuda:0
+sam3_checkpoint: null         # null downloads SAM3 from Hugging Face
+
+robot:
+  host: ???                   # machine running the YOR server
+  port: 5557
+zed:
+  host: ???                   # ZED computer, running YOR's ZED node: the same address as THOR_IP in YOR's robot/base.py
+  port: 6000
+
+navigation:
+  voxel_size: 0.03
+  max_depth: 5.0
+  pixel_stride: 4
+  body_radius: 0.8            # points this close to the base in the ground plane are not mapped
+  map_rate_hz: 1.0
+  max_keyframes: 64           # past this, every other keyframe is dropped
+  min_target_score: 0.7       # SAM3 query score needed to accept a target
+  grid_resolution: 0.05
+  height_band: [0.3, 1.5]     # meters above the floor that count as obstacles
+  robot_radius: 0.30
+  # Base origin to target. The base radius is 0.30, which leaves 15 cm for half the target's width.
+  # An obstacle can keep the base farther away.
+  reach_distance: 0.45
+  arrival_distance: 0.08      # from here the base turns in place to face the target
+  arrival_yaw_deg: 5.0        # it has arrived when its heading is this close
+  timeout_s: 180.0
+
+hydra:
+  output_subdir: null
+  job:
+    chdir: false
+  run:
+    dir: .

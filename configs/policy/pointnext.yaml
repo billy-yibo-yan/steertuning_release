@@ -1,0 +1,14 @@
+# Encoder ablation: PointNeXt in place of Utonia, trained during pretraining.
+defaults:
+  - steertuning
+  - _self_
+
+point_encoder: pointnext
+point_feature_dim: 387      # last stage 384 + xyz 3
+point_encoder_args:
+  num_points: 5000
+  width: 48                 # stem; the stages double it to 96, 192, 384
+  strides: [4, 4, 2]        # 5000 points -> 1250 -> 312 -> 156 tokens
+  blocks: [3, 5, 3]
+  neighbors: 24
+  expansion: 4

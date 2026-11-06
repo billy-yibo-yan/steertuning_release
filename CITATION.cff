@@ -1,0 +1,41 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the paper."
+title: "Steertuning Policies from a Few Human Videos: official code"
+version: 1.0.0
+license: MIT
+url: "https://steertuning.github.io"
+repository-code: "https://github.com/billy-yibo-yan/steertuning_release"
+authors:
+  - name: "The Steertuning Authors"
+preferred-citation:
+  type: article
+  title: "Steertuning Policies from a Few Human Videos"
+  year: 2026
+  journal: "arXiv preprint"
+  identifiers:
+    - type: other
+      value: "arXiv:2610.18711"
+  url: "https://arxiv.org/abs/2610.18711"
+  authors:
+    - given-names: Billy
+      family-names: Yan
+    - given-names: Isaac
+      family-names: Tu
+    - given-names: Kelly
+      family-names: Lee
+    - given-names: Blake
+      family-names: Chang
+    - given-names: Kenny
+      family-names: Ma
+    - given-names: Kanad
+      family-names: Patel
+    - given-names: Dhawal
+      family-names: Kabra
+    - given-names: Neer
+      family-names: Patel
+    - given-names: Kevin
+      family-names: Wu
+    - given-names: Lerrel
+      family-names: Pinto
+    - given-names: Irmak
+      family-names: Guzey

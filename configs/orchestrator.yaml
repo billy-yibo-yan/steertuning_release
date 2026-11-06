@@ -1,0 +1,33 @@
+# Language commands to navigate and manipulate sub-tasks.
+defaults:
+  - navigation
+  - _self_
+
+# scripts/run_command.py reuses a map built by scripts/navigate.py. It does not use `target` or
+# `map_duration_s` from navigation.yaml.
+command: ???
+confirm: true                 # show the plan and ask before the robot moves
+
+planner:
+  model: gemini-robotics-er-1.6-preview
+  temperature: 0.2
+  thinking_budget: 2048
+
+# Seconds per manipulate step, counted from the first executed row. A step has no signal that its task
+# is done, so it always runs this long. Set it a few seconds longer than your longest demonstration.
+time_limit: 20.0
+
+camera:
+  host: ???                   # computer that runs the Aria stream
+  port: 5555
+
+# An example catalog. Each key is a task folder under the data root, with its adapter and demonstrations.
+tasks:
+  pick_up_white_cup:
+    description: pick up the white cup from the table
+    instruction: picking up the white cup from the table
+    object_prompt: white cup
+  drop_cup_in_trash:
+    description: drop the held cup into the trash bin
+    instruction: dropping the white cup into the trash bin
+    object_prompt: white cup
